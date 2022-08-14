@@ -1,0 +1,1 @@
+/home/satsu/scripts/updates-arch.sh
