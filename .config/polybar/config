@@ -1,1 +1,388 @@
-/home/satsu/.config/polybar/config
+# TODO: create rofi dropdown menu
+; vim:ft=dosini
+; vim:foldenable:foldmethod=marker
+
+[colors]
+; {{{
+background = #282828
+background-alt = #25292B
+foreground = #BDACB7
+foreground-alt = #F5A2BB
+primary = #F62BED
+secondary = #00ff99
+alert = #bd2c40
+; }}}
+[bar/satsu]
+; {{{
+# guess monitor
+monitor = DP-3
+width = 100%
+height = 30
+offset-x = 0%
+offset-y = 0%
+radius = 0
+fixed-center = true
+enable-ipc = true
+#pseudo-transparency = true
+
+separator =
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 28
+line-color = #f00
+
+#border-size = 4
+#border-color = #735787
+border-size = 0
+border-color = #00000000
+
+padding-left = 1
+padding-right = 1
+
+module-margin-left = 1
+module-margin-right = 1
+
+; confusingly using those values are 1-indexed
+; font-0 = IBM Plex Mono:style=Regular:pixelsize=12
+; font-1 = IBM Plex Mono:style=Regular:pixelsize=12
+font-0 = ypn envypn:style=Regular:pixelsize=22
+font-1 = ypn envypn:style=Regular:pixelsize=22
+font-2 = siji:pixelsize=10;1
+font-3 = Weather Icons:size=12;1
+font-4 = FontAwesome
+font-5 = cryptocoins:style=Regular;0
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+modules-left = alsa cpu memory temperature battery date keyboard xinput-lock
+; modules-center = i3 marks
+modules-right = updates-arch openweathermap-forecast wlan eth
+
+; }}}
+[module/marks]
+; {{{
+type = custom/ipc
+format = <output>
+format-foreground = ${colors.secondary}
+# hook-0 disabled
+hook-0 = echo ""
+hook-1 = $HOME/scripts/i3_getmarks.sh
+# the index is confusing because initial 1 means hook-0
+initial = 1
+; }}}
+[module/acpi-warn]
+; {{{
+type = custom/script
+format-foreground=${colors.foreground}
+format-background = ${colors.alert}
+format-padding = 1
+format-prefix = "-- "
+format = <label>
+exec = pgrep acpid >/dev/null && echo "" || echo "ACPI"
+label = "%output%"
+interval = 10
+; }}}
+[module/xwindow]
+; {{{
+type = internal/xwindow
+label = %title:0:30:...%
+#format-foreground = #0000ff
+format-padding = 2
+; }}}
+[module/keyboard]
+; {{{
+type = internal/xkeyboard
+format = <label-indicator>
+format-foreground = ${colors.foreground}
+format-background = ${colors.alert}
+format-padding = 0
+
+label-indicator-padding = 1
+label-indicator =  %name%
+
+; List of indicators to ignore
+#blacklist-0 = num lock
+#blacklist-1 = scroll lock
+; }}}
+; [module/updates-void]
+; ; {{{
+; type = custom/script
+; format-prefix = "xbps: "
+; format-prefix-foreground = ${colors.primary}
+; format = <label>
+; exec-if = pgrep xbps-install || /bin/true
+; exec = $HOME/scripts/updates-void.sh
+; label = "%output%"
+; interval = 300
+; ; }}}
+[module/updates-arch]
+; {{{
+type = custom/script
+format-prefix = " pacman: "
+; arch
+format-prefix-foreground = ${colors.primary}
+format = <label>
+exec-if = pgrep checkupdates || /bin/true
+exec = $HOME/scripts/updates-arch.sh
+label = "%output%"
+interval = 300
+; }}}
+[module/i3]
+; {{{
+type = internal/i3
+#format-prefix = "|"
+#format-suffix = "|"
+format =  <label-state> <label-mode>
+index-sort = true
+enable-scroll = false
+enable-click = false
+wrapping-scroll = false
+
+label-mode-padding = 3
+label-mode-foreground = ${colors.secondary}
+label-mode-background = ${colors.background-alt}
+
+; focused = Active workspace on focused monitor
+label-focused = %index%
+label-focused-background = ${colors.background-alt}
+label-focused-underline = ${colors.foreground-alt}
+label-focused-padding = 2
+label-focused-font = 3
+
+; unfocused = Inactive workspace on any monitor
+label-unfocused = %index%
+label-unfocused-background = ${colors.background}
+label-unfocused-padding = 2
+label-unfocused-font = 3
+
+; visible = Active workspace on unfocused monitor
+label-visible = %index%
+label-visible-background = ${self.label-focused-background}
+#label-visible-underline = ${self.label-focused-underline}
+label-visible-padding = ${self.label-focused-padding}
+label-visible-font = 3
+
+; urgent = Workspace with urgency hint set
+label-urgent = %index%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+label-urgent-font = 3
+
+; Separator in between workspaces
+#label-separator = |
+; }}}
+[module/cpu]
+; {{{
+type = internal/cpu
+interval = 2
+format-prefix = ""
+;heart
+format-prefix-foreground = ${colors.foreground-alt}
+label = " %percentage:2%%"
+; }}}
+[module/memory]
+; {{{
+type = internal/memory
+interval = 5
+format-prefix = ""
+; ghost
+format-prefix-foreground = ${colors.foreground-alt}
+label = " %percentage_used%%"
+
+; }}}
+[module/temperature]
+; {{{
+type = internal/temperature
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 3
+
+; Thermal zone to use
+; To list all the zone types, run
+; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+; Default: 0
+thermal-zone = 0
+
+; Full path of temperature sysfs path
+; hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp1_input
+; https://github.com/polybar/polybar/issues/2078#issuecomment-622310440
+; Use this for a consistent experience:
+hwmon-path = ${env:HWMON_PATH}
+
+; ; Base temperature for where to start the ramp (in degrees celsius)
+; ; Default: 0
+; base-temperature = 20
+
+; Threshold temperature to display warning label (in degrees celsius)
+; Default: 80
+warn-temperature = 100
+
+format-prefix = " "
+; thermometer slant
+format-prefix-foreground = ${colors.foreground-alt}
+; }}}
+[module/wlan]
+; {{{
+type = internal/network
+interface = wlp0s20f3
+interval = 5
+label-connected = %essid% (%local_ip%)
+
+format-connected = <ramp-signal> <label-connected>
+format-disconnected =
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+; ramp-signal-0 = 
+; ramp-signal-1 = 
+; ramp-signal-2 = 
+ramp-signal-foreground = ${colors.foreground-alt}
+; }}}
+[module/eth]
+; {{{
+type = internal/network
+interface = enp7s0
+interval = 5
+
+format-connected-prefix = " "
+; home (big)
+format-connected-prefix-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+format-disconnected =
+; }}}
+[module/date]
+; {{{
+type = internal/date
+interval = 5
+
+date = " %A %d/%m"
+; date-alt = " %a %d"
+
+time = %H:%M
+time-alt = %H:%M
+
+format-prefix = 
+; clock
+format-prefix-foreground = ${colors.foreground-alt}
+#format-underline = #0a6cf5
+
+label = %date% %time%
+; }}}
+[module/alsa]
+; {{{
+type = internal/alsa
+
+format-volume = <bar-volume>
+#label-volume =
+label-volume-foreground = ${colors.foreground-alt}
+
+format-muted = <label-muted>
+label-muted-foreground = ${colors.foreground-alt}
+label-muted = " sound muted "
+
+bar-volume-width = 11
+# gay https://www.color-hex.com/color-palette/28256
+# bigger:
+#i=0; echo 'bar-volume-width = 25'; for c in 74d7ec ffafc7 fbf9f5 ffafc7 74d7ec ; do for n in {0..4}; do echo "bar-volume-foreground-${i} = #${c}"; let i++; done; done
+
+bar-volume-gradient = true
+bar-volume-indicator =
+bar-volume-indicator-font = 2
+bar-volume-fill = 
+bar-volume-fill-font = 2
+bar-volume-empty = 
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = #333
+; master-soundcard = hw:1
+; master-mixer = IEC958
+; https://github.com/polybar/polybar/issues/491#issuecomment-292883022
+; polybar's really stupid
+; }}}
+[module/battery]
+; {{{
+type = internal/battery
+battery = BAT1
+adapter = ACAD
+full-at = 99
+
+format-charging = <animation-charging> <label-charging>
+format-charging-underline = ${colors.secondary}
+
+format-discharging = <animation-discharging> <label-discharging>
+format-discharging-underline = ${colors.alert}
+
+#format-full-suffix = " |"
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.foreground-alt}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.foreground-alt}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-framerate = 450
+
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-foreground = ${colors.foreground-alt}
+animation-discharging-framerate = 1000
+; }}}
+[module/openweathermap-forecast]
+; {{{
+type = custom/script
+exec = ~/scripts/openweathermap-forecast.sh
+interval = 1200
+label-font = 4
+; }}}
+[module/xinput-lock]
+; {{{
+type = custom/script
+exec = ~/scripts/xinput_lock.sh 'AT Translated Set 2 keyboard'
+interval = 10
+label-font = 5
+; }}}
+[module/coingecko]
+; {{{
+; important:
+; https://github.com/willHol/polybar-crypto/pull/9/commits/b4ac3ad07f16c896bef4c237e358542ebf5a4ddd
+type = custom/script
+exec = ~/.config/polybar/coingecko.py
+interval = 300
+label-font = 6
+; }}}
+; notes about fonts:
+; {{{
+; CTRL+SHIFT+U to input those codes
+; siji:
+; heart: 0x00e106-7
+; ghost (trans): 0x00e140-4
+; ghost (opaque): 0x00e0c6-8
+; cpu (boring): 0x00e026
+; thermometer (short): 0x00e0cf
+; thermometer (slant): 0x00e0ca
+; thermometer (tall): 0x00e0cc
+; keyboard: 0x00e26f
+; calendar: 0x00e266
+; speaker (round): 0x00e1c9
+; speaker (edged): 0x00e203
+; alien: 0x00e19d
+; clock: 0x00e017
+; note: 0x00e0fe
+; exclamation: 0x00e0b3
+; file: 0x00e1d5
+; home (big): 0x00e1f0
+; home (tiny): 0x00e10e
+; arch (simple): 0x00e00e
+; arch (detailed) : 0x00e1b4
+; }}}
