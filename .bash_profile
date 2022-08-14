@@ -1,0 +1,1 @@
+/home/satsu/.bash_profile
