@@ -74,6 +74,33 @@ endif
 let c_comment_strings=1                                 " show strings inside C comments
 let python_highlight_all=1                              " use full python syntax highlighting
 "}}}
+"********* COLORS ********* {{{
+set termguicolors " still experimenting
+" see :h group-name
+" also see https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim
+" for gui colors
+" <C-w>f ~/.config/nvim/colors/moomincore.vim
+if !empty(glob("~/.config/nvim/colors/moomincore.vim"))
+    colorscheme moomincore
+endif
+
+hi clear CursorLine " highlight ONLY the linenr
+" hi clear SpellBad
+
+hi CursorLine ctermbg=233 ctermfg=NONE
+hi VertSplit ctermfg=6 ctermbg=0 cterm=NONE
+
+" syntax highlight "+,%,=,<>,-,^,*" etc in certain files
+" https://stackoverflow.com/a/18943408/8225672
+ " autocmd FileType python call <SID>def_base_syntax()
+ " function! s:def_base_syntax()
+ "     syntax match commonOperator "\(+\|!\|%\|=\|/\|<\|>\|-\|\^\|\*\)"
+ "     hi link commonOperator Statement
+ "     hi link baseDelimiter Statement
+ "     " syntax match baseDelimiter "\(\[\|\]\|\.\|,\)"
+ "     " syntax match myParens "\((\|)\)"
+ "     " hi link myParens Special
+ " endfunction
 "******** PLUGINS ********* {{{
 " auto install plug{{{
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
@@ -583,14 +610,6 @@ cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'close' : 'q')<CR>
 " https://vi.stackexchange.com/a/23351
 cabbrev YMDT <C-R>=strftime("%Y-%m-%d_%s")<CR>
 "}}}
-"********* COLORS ********* {{{
-
-" see :h group-name
-" also see https://vim.fandom.com/wiki/Xterm256_color_names_for_console_Vim
-" for gui colors
-" <C-w>f ~/.config/nvim/colors/moomincore.vim
-if !empty(glob("~/.config/nvim/colors/moomincore.vim"))
-    colorscheme moomincore
 endif
 
 hi clear CursorLine " highlight ONLY the linenr
