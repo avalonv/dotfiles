@@ -14,7 +14,7 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=800
+HISTSIZE=100000
 HISTFILESIZE=-1
 
 # emulate vi for inputting text
@@ -105,12 +105,14 @@ function set_prompt
 
 
 PROMPT_COMMAND='set_prompt'
+# fucking SAVE THE HISTORY YOU COCKSUCKING RAT
+PROMPT_COMMAND="$PROMPT_COMMAND;history -a"
 
 # void specific
-alias xbps-update='xbps-install -Suy'
-alias xbps-search='xbps-query --regex -Rs'
-alias xbps-info='xbps-query -RS'
-alias xbps-deps='xbps-query -Rx'
+# alias xbps-update='xbps-install -Suy'
+# alias xbps-search='xbps-query --regex -Rs'
+# alias xbps-info='xbps-query -RS'
+# alias xbps-deps='xbps-query -Rx'
 # alias xbps-install='xbps-install -S'
 
 # arch specific
@@ -138,7 +140,6 @@ alias mpc='ncmpcpp'
 alias yget="youtube-dl -x --audio-format mp3"
 # https://superuser.com/questions/927523/how-to-download-only-subtitles-of-videos-using-youtube-dl
 
-alias pls='sudo'
 alias rsync='rsync --progress'
 alias rsync-dots='rsync -r --existing $HOME/ $HOME/Documents/dotfiles-default && cd $HOME/Documents/dotfiles-default && git status'
 alias killjobs='kill $(jobs -p)'
