@@ -2,21 +2,28 @@
     // show diagnostic message if there's an error in the line,
     // rahter than under the cursor
     "diagnostic.checkCurrentLine": false,
+    // tab selects the first rather than the second option
+    // https://github.com/neoclide/coc.nvim/issues/4080
+    "suggest.noselect": true,
 
     // coc-python settings, these DON'T affect coc-pyls
     // "python.analysis.diagnosticEnabled": false,
     // see https://github.com/neoclide/coc-python/issues/14 for why this is
     // needed. coc-python kinda sucks, prefer coc-pyls
-    "python.jediEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.lintOnSave": true,
+    // no longer relevant. Please use pyright
+    // "python.jediEnabled": true,
+    // "python.linting.enabled": true,
+    // "python.linting.flake8Enabled": true,
+    // "python.linting.pylintEnabled": false,
+    // "python.linting.lintOnSave": true,
 
     // coc-yank
     "yank.highlight.enable": false,
     "yank.highlight.duration": 500,
     "yank.list.maxsize": 200,
+
+    // coc-prettier (still a mess)
+    "prettier.documentSelectors": ["**/*.abc"],
 
     "languageserver": {
         "ccls": {
