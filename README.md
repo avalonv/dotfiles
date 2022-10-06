@@ -1,1 +1,3 @@
-# dotfiles-default
+# dotfiles
+
+`rsync -r --existing ~/ .`
