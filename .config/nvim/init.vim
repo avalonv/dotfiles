@@ -237,6 +237,9 @@ else
 endif
 
 "}}}
+Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' } "{{{
+Plug 'tiagovla/scope.nvim' " give tab has its own scope of buffers
+Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
 "}}}
 Plug 'tpope/vim-surround' "{{{
 "}}}
@@ -701,4 +704,9 @@ hi VertSplit ctermfg=6 ctermbg=0 cterm=NONE
 "→ uppercase the first character of every sentence: %s:\(^\|\. \)\a:\U&:gi (see GoodSpell)
 "→ uppercase "I"s and change "Im" to "I'm": :%s:\<i\(\>\|m\>\)\@=:\U&:gi | %s:\<Im\>:I'm:g (see GoodSpell)
 "→ use zR to open all folds, zM to close all folds
+"}}}
+"********** LUA ***********"{{{
+" lua << EOF
+lua require('default_config')
+" EOF
 "}}}
