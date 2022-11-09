@@ -35,7 +35,7 @@ set nrformats-=octal                                    " do not recognize octal
 set whichwrap+=<,>,h,l,[,]                              " go up/down when you reach the start/end of the current line
 set list                                                " explicitly display trailing characters
 set listchars=tab:>·,trail:␣,extends:>,precedes:<,nbsp:+
-set guicursor=n-v-c:blinkwait999-blinkon650-blinkoff450 " cursor config. this one you're gonna wanna read the docs for
+set guicursor=n-v-c:blinkwait500-blinkon400-blinkoff400 " cursor config. this one you're gonna wanna read the docs for
 set guicursor+=n-v-c:block-Cursor                       " the appropiate highlight groups are in the colors file
 set guicursor+=i:blinkwait100-blinkon350-blinkoff350
 set guicursor+=i:ver30-iCursor
@@ -92,15 +92,25 @@ hi VertSplit ctermfg=6 ctermbg=0 cterm=NONE
 
 " syntax highlight "+,%,=,<>,-,^,*" etc in certain files
 " https://stackoverflow.com/a/18943408/8225672
- " autocmd FileType python call <SID>def_base_syntax()
- " function! s:def_base_syntax()
- "     syntax match commonOperator "\(+\|!\|%\|=\|/\|<\|>\|-\|\^\|\*\)"
- "     hi link commonOperator Statement
- "     hi link baseDelimiter Statement
- "     " syntax match baseDelimiter "\(\[\|\]\|\.\|,\)"
- "     " syntax match myParens "\((\|)\)"
- "     " hi link myParens Special
- " endfunction
+autocmd FileType python call <SID>def_base_syntax()
+function! s:def_base_syntax()
+    syntax match commonOperator "\(+\|!\|%\|=\|/\|<\|>\|-\|\^\|\*\)"
+    " hi commonOperator guifg=#F4F8CA
+    hi commonOperator guifg=#F4F8CA
+    syntax match baseDelimiter "\(\[\|\]\|\.\|,\)"
+    hi link baseDelimiter Statement
+    syntax match myParens "\((\|)\)"
+    hi myParens guifg=#5BCEFA
+    " https://stackoverflow.com/a/38203779/8225672
+    syntax match pythonSelf "\(\W\|^\)\@<=self\(\.\)\@="
+    syntax match pythonCls "\(\W\|^\)\@<=cls\(\.\)\@="
+    hi link pythonSelf Statement
+    hi link pythonCls Statement
+    hi link pythonException pythonConditional
+    hi pythonStatement guifg=#FF54A5
+    " syntax match cCustomClassName "\(^class\s\)\@<=\w\+"
+    " hi link cCustomClassName pythonStatement
+endfunction
 " }}}
 "******** PLUGINS ********* {{{
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
@@ -567,9 +577,6 @@ noremap <silent> <C-w>n :enew<cr>
 " delete buffer
 noremap <C-w>d <esc>:bdelete<cr>
 
-" edit file under cursor
-noremap <silent> <C-w>f <C-w>f<C-w>L
-
 " just use <C-w>c like a responsible individual
 noremap <silent> <C-w>q <esc>:close<cr>
 
@@ -760,13 +767,10 @@ if exists("g:neovide")
     " Put anything you want to happen only in Neovide here
     noremap <silent> <C-Tab> <esc>:bnext<cr>
     noremap <silent> <C-S-Tab> <esc>:bprevious<cr>
-    " same as p but mimick terminal behaviour just in case I forget
-    inoremap <C-V> <C-r>+
-    cnoremap <C-V> <C-r>+
-    let g:gui_font_size = 10
+    let g:gui_font_size = 9
 
-    silent! execute('set guifont=JetBrains\ Mono:h'.g:gui_font_size)
-
+    " silent! execute('set guifont=JetBrains\ Mono:h'.g:gui_font_size)
+    set guifont=JetBrains_Mono:h9.5
     function! ResizeFont(delta)
         let g:gui_font_size = g:gui_font_size + a:delta
         execute('set guifont=JetBrains\ Mono:h'.g:gui_font_size)
@@ -779,6 +783,8 @@ if exists("g:neovide")
     let g:neovide_refresh_rate_idle=30
     " kde does this automatically
     " let g:neovide_remember_window_size = v:true
+    let g:neovide_cursor_animation_length=0.13
+    let g:neovide_cursor_trail_size = 0.5
     let g:neovide_cursor_vfx_mode = "pixiedust"
     let g:neovide_cursor_vfx_particle_density=30.0
     let g:neovide_cursor_vfx_particle_lifetime=3

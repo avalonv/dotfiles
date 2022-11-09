@@ -85,24 +85,50 @@ function set_prompt
     # local cool_ass_cat='~(=^⋅ω⋅^)'
     local cool_ass_cat='~'
     local begin='\[\e[m\]\[\e[1;90m\]'
-    local user='\[\e[1;93m\]\u\[\e[m\]'
+    local user='\[\e[0;90m\]\u\[\e[m\]'
     local host='\[\e[m\]@\h'
-    local bad='\[\e[1;92m\]'"${last_exit}"
+    local bad='\[\e[0;94m\]'"${last_exit}\[\e[m\]"
     local time='(\A)'
-    local dir='\[\e[m\]\[\e[1;94m\]\w\[\e[m\]'
-    local end="\n$(random_color)\$\[\e[m\] "
+    local dir='\[\e[m\]\[\e[0;93m\]\w\[\e[m\]'
+    # local end="\n|$VIRTUAL_ENV $(random_color)¤\[\e[m\] "
 
+    if [[ -z "$VIRTUAL_ENV" ]]; then
+        local end="\n \[\e[1;94m\]¤\[\e[m\] "
+    else
+        local end="\n (venv) \[\e[1;94m\]¤\[\e[m\] "
+    fi
     if [[ $(pwd) == "/home/$(id -nu ${UID})" ]]; then
-      dir="\[\e[m\]\[\e[1;93m\]$cool_ass_cat\[\e[m\]"
+        dir="\[\e[m\]\[\e[1;93m\]$cool_ass_cat\[\e[m\]"
     fi
 
     if [[ $last_exit = 0 ]]; then
-        PS1="${begin}${user}${host}${dir} ${end}"
+        PS1="${begin}${user}${host}${dir}       ${end}"
     else
-        PS1="${begin}${user}${host}${bad}${dir} ${end}"
+        PS1="${begin}${user}${host}${dir} ${bad}${end}"
     fi
 }
 
+abspath () {
+    case "$1" in
+        /*)printf "%s\n" "$1";;
+        *)printf "%s\n" "$PWD/$1";;
+    esac;
+}
+
+sedrename() {
+# thankyouuuu https://stackoverflow.com/a/49215849/8225672
+    if [ $# -gt 1 ]; then
+        sed_pattern=$1
+        shift
+        for file in $(ls $@); do
+            target="$(sed $sed_pattern <<< $file)"
+            mkdir -p "$(dirname $(abspath $target))"
+            mv -v "$file" "$target"
+        done
+    else
+        echo "usage: $0 sed_pattern files..."
+    fi
+}
 
 PROMPT_COMMAND='set_prompt'
 # fucking SAVE THE HISTORY YOU COCKSUCKING RAT
@@ -148,6 +174,7 @@ alias screenshot='maim -m 9 ~/Pictures/Screenshots/$(date +%F-%H%M%S)_maim.png'
 alias myip="echo $(curl -s ipecho.net/plain)"
 alias issh="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 alias gitls="git ls-tree -r master"
+alias pyvenv="source ./venv/bin/activate"
 
 
 # BEGIN_KITTY_SHELL_INTEGRATION
