@@ -1,3 +1,3 @@
 # dotfiles
 
-`rsync -r --existing ~/ .`
+    rsync -r --existing ~/ .
